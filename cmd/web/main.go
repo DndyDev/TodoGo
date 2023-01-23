@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 )
 
@@ -12,6 +13,15 @@ func main() {
 	addres := flag.String("addr", ":4000", "Web addres for HTTP")
 
 	flag.Parse()
+
+	//f, err := os.OpenFile("info.log", os.O_RDWR|os.O_CREATE, 0666)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//defer f.Close()
+
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", home)
@@ -22,9 +32,15 @@ func main() {
 	mux.Handle("/static", http.NotFoundHandler())
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	log.Printf("Server start on %s", *addres)
-	err := http.ListenAndServe(*addres, mux)
-	log.Fatal(err)
+	srv := &http.Server{
+		Addr:     *addres,
+		ErrorLog: errorLog,
+		Handler:  mux,
+	}
+
+	infoLog.Printf("Server start on %s", *addres)
+	err := srv.ListenAndServe()
+	errorLog.Fatal(err)
 }
 
 type neuteredFileSystem struct {
