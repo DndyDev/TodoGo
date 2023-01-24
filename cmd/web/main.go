@@ -8,25 +8,35 @@ import (
 	"path/filepath"
 )
 
+type application struct {
+	errorLog *log.Logger
+	infoLog  *log.Logger
+}
+
 func main() {
 
 	addres := flag.String("addr", ":4000", "Web addres for HTTP")
 
 	flag.Parse()
 
-	//f, err := os.OpenFile("info.log", os.O_RDWR|os.O_CREATE, 0666)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//defer f.Close()
+	f, err := os.OpenFile("info.log", os.O_RDWR|os.O_CREATE, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime)
 
+	app := &application{
+		errorLog: errorLog,
+		infoLog:  infoLog,
+	}
+
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", home)
-	mux.HandleFunc("/note", showNote)
-	mux.HandleFunc("/note/create", createNote)
+	mux.HandleFunc("/", app.home)
+	mux.HandleFunc("/note", app.showNote)
+	mux.HandleFunc("/note/create", app.createNote)
 
 	fileServer := http.FileServer(neuteredFileSystem{http.Dir("./static")})
 	mux.Handle("/static", http.NotFoundHandler())
@@ -39,7 +49,7 @@ func main() {
 	}
 
 	infoLog.Printf("Server start on %s", *addres)
-	err := srv.ListenAndServe()
+	srv.ListenAndServe()
 	errorLog.Fatal(err)
 }
 
