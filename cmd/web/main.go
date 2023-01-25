@@ -11,12 +11,14 @@ import (
 	"net/http"
 	"os"
 
+	"dandydev.com/todogo/pkg/models/mysql"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 type application struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
+	notes    *mysql.NoteModel
 }
 
 func main() {
@@ -46,6 +48,7 @@ func main() {
 	app := &application{
 		errorLog: errorLog,
 		infoLog:  infoLog,
+		notes:    &mysql.NoteModel{DB: db},
 	}
 
 	srv := &http.Server{
