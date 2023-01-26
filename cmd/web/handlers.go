@@ -11,17 +11,17 @@ import (
 	"dandydev.com/todogo/pkg/models"
 )
 
-func (app *application) home (writer http.ResponseWriter, request *http.Request) {
-		
+func (app *application) home(writer http.ResponseWriter, request *http.Request) {
+
 	if request.URL.Path != "/" {
-		app.NotFound(writer)
+		app.notFound(writer)
 		return
 	}
 	lastsNotes, err := app.notes.Latest()
 	if err != nil {
 		app.serverError(writer, err)
 		return
-	
+	}
 	for _, note := range lastsNotes {
 		fmt.Fprintf(writer, "%v\n", note)
 	}
@@ -44,7 +44,7 @@ func (app *application) home (writer http.ResponseWriter, request *http.Request)
 
 }
 
-func (app *application) showNote( writer http.ResponseWriter, request *http.Request) {
+func (app *application) showNote(writer http.ResponseWriter, request *http.Request) {
 	id, err := strconv.Atoi(request.URL.Query().Get("id"))
 	if err != nil || id < 1 {
 		app.notFound(writer)
