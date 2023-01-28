@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	// "html/template"
+	"html/template"
 	"net/http"
 	"strconv"
 
@@ -22,25 +22,21 @@ func (app *application) home(writer http.ResponseWriter, request *http.Request) 
 		app.serverError(writer, err)
 		return
 	}
-	for _, note := range lastsNotes {
-		fmt.Fprintf(writer, "%v\n", note)
+	data := &templateData{Notes: lastsNotes}
+	templateFiles := []string{
+		"./ui/html/home.page.tmpl",
+		"./ui/html/base.layout.tmpl",
+		"./ui/html/footer.partical.tmpl",
 	}
-
-	// templatePaths := []string{
-	// 	"./ui/html/home.page.tmpl",
-	// 	"./ui/html/base.layout.tmpl",
-	// 	"./ui/html/footer.partical.tmpl",
-	// }
-	// templates, err := template.ParseFiles(templatePaths...)
-	// if err != nil {
-	// 	app.serverError(writer, err)
-	// 	return
-	// }
-	// err = templates.Execute(writer, nil)
-	// if err != nil {
-	// 	app.serverError(writer, err)
-	// 	http.Error(writer, "Internal Server Error", 500)
-	// }
+	templates, err := template.ParseFiles(templateFiles...)
+	if err != nil {
+		app.serverError(writer, err)
+		return
+	}
+	err = templates.Execute(writer, data)
+	if err != nil {
+		app.serverError(writer, err)
+	}
 
 }
 
@@ -60,7 +56,25 @@ func (app *application) showNote(writer http.ResponseWriter, request *http.Reque
 		}
 		return
 	}
-	fmt.Fprintf(writer, "%v", note)
+
+	data := &templateData{Note: note}
+
+	fileTemplates := []string{
+		"./ui/html/show.page.tmpl",
+		"./ui/html/base.layout.tmpl",
+		"./ui/html/footer.partical.tmpl",
+	}
+
+	templates, err := template.ParseFiles(fileTemplates...)
+	if err != nil {
+		app.serverError(writer, err)
+		return
+	}
+
+	err = templates.Execute(writer, data)
+	if err != nil {
+		app.serverError(writer, err)
+	}
 }
 
 func (app *application) createNote(
