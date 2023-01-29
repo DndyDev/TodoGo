@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 
-	"html/template"
 	"net/http"
 	"strconv"
 
@@ -22,21 +21,25 @@ func (app *application) home(writer http.ResponseWriter, request *http.Request) 
 		app.serverError(writer, err)
 		return
 	}
-	data := &templateData{Notes: lastsNotes}
-	templateFiles := []string{
-		"./ui/html/home.page.tmpl",
-		"./ui/html/base.layout.tmpl",
-		"./ui/html/footer.partical.tmpl",
-	}
-	templates, err := template.ParseFiles(templateFiles...)
-	if err != nil {
-		app.serverError(writer, err)
-		return
-	}
-	err = templates.Execute(writer, data)
-	if err != nil {
-		app.serverError(writer, err)
-	}
+
+	app.render(writer, request, "home.page.tmpl", &templateData{
+		Notes: lastsNotes,
+	})
+	// data := &templateData{Notes: lastsNotes}
+	// templateFiles := []string{
+	// 	"./ui/html/home.page.tmpl",
+	// 	"./ui/html/base.layout.tmpl",
+	// 	"./ui/html/footer.partical.tmpl",
+	// }
+	// templates, err := template.ParseFiles(templateFiles...)
+	// if err != nil {
+	// 	app.serverError(writer, err)
+	// 	return
+	// }
+	// err = templates.Execute(writer, data)
+	// if err != nil {
+	// 	app.serverError(writer, err)
+	// }
 
 }
 
@@ -57,24 +60,28 @@ func (app *application) showNote(writer http.ResponseWriter, request *http.Reque
 		return
 	}
 
-	data := &templateData{Note: note}
+	app.render(writer, request, "show.page.tmpl", &templateData{
+		Note: note,
+	})
 
-	fileTemplates := []string{
-		"./ui/html/show.page.tmpl",
-		"./ui/html/base.layout.tmpl",
-		"./ui/html/footer.partical.tmpl",
-	}
+	// data := &templateData{Note: note}
 
-	templates, err := template.ParseFiles(fileTemplates...)
-	if err != nil {
-		app.serverError(writer, err)
-		return
-	}
+	// fileTemplates := []string{
+	// 	"./ui/html/show.page.tmpl",
+	// 	"./ui/html/base.layout.tmpl",
+	// 	"./ui/html/footer.partical.tmpl",
+	// }
 
-	err = templates.Execute(writer, data)
-	if err != nil {
-		app.serverError(writer, err)
-	}
+	// templates, err := template.ParseFiles(fileTemplates...)
+	// if err != nil {
+	// 	app.serverError(writer, err)
+	// 	return
+	// }
+
+	// err = templates.Execute(writer, data)
+	// if err != nil {
+	// 	app.serverError(writer, err)
+	// }
 }
 
 func (app *application) createNote(
