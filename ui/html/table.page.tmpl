@@ -1,0 +1,12 @@
+{{template "base" .}}
+
+{{define "title"}}Проект{{end}}
+
+{{define "main"}}
+<div class="snippet">
+    <div class="metadata">
+        <strong>{{.Project.Title}}</strong>
+        <span>#{{.Project.ID}}</span>
+    </div>
+</div>
+{{end}}

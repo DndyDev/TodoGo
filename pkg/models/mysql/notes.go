@@ -57,11 +57,11 @@ func (model *NoteModel) Insert(title, content, expires string) (int, error) {
 
 	return int(id), nil
 }
-func (model *NoteModel) Get(id int) (*models.Note, error) {
+func (model *NoteModel) Get(noteId int, projectId int) (*models.Note, error) {
 	stmt := `SELECT id, title, content, created, expires FROM notes 
-	WHERE expires > UTC_TIMESTAMP() AND id = ?`
+	WHERE expires > UTC_TIMESTAMP() AND id = ? AND project_id = ?`
 
-	row := model.DB.QueryRow(stmt, id)
+	row := model.DB.QueryRow(stmt, noteId, projectId)
 	note := &models.Note{}
 	err := row.Scan(&note.ID, &note.Title, &note.Content,
 		&note.Created, &note.Expires)

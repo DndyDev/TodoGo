@@ -25,21 +25,6 @@ func (app *application) home(writer http.ResponseWriter, request *http.Request) 
 	app.render(writer, request, "home.page.tmpl", &templateData{
 		Notes: lastsNotes,
 	})
-	// data := &templateData{Notes: lastsNotes}
-	// templateFiles := []string{
-	// 	"./ui/html/home.page.tmpl",
-	// 	"./ui/html/base.layout.tmpl",
-	// 	"./ui/html/footer.partical.tmpl",
-	// }
-	// templates, err := template.ParseFiles(templateFiles...)
-	// if err != nil {
-	// 	app.serverError(writer, err)
-	// 	return
-	// }
-	// err = templates.Execute(writer, data)
-	// if err != nil {
-	// 	app.serverError(writer, err)
-	// }
 
 }
 
@@ -50,7 +35,7 @@ func (app *application) showNote(writer http.ResponseWriter, request *http.Reque
 		return
 	}
 
-	note, err := app.notes.Get(id)
+	note, err := app.notes.Get(id, 1)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			app.notFound(writer)
@@ -64,24 +49,6 @@ func (app *application) showNote(writer http.ResponseWriter, request *http.Reque
 		Note: note,
 	})
 
-	// data := &templateData{Note: note}
-
-	// fileTemplates := []string{
-	// 	"./ui/html/show.page.tmpl",
-	// 	"./ui/html/base.layout.tmpl",
-	// 	"./ui/html/footer.partical.tmpl",
-	// }
-
-	// templates, err := template.ParseFiles(fileTemplates...)
-	// if err != nil {
-	// 	app.serverError(writer, err)
-	// 	return
-	// }
-
-	// err = templates.Execute(writer, data)
-	// if err != nil {
-	// 	app.serverError(writer, err)
-	// }
 }
 
 func (app *application) createNote(
@@ -104,4 +71,27 @@ func (app *application) createNote(
 	}
 	http.Redirect(writer, request, fmt.Sprintf("/note?id=%d", id),
 		http.StatusSeeOther)
+}
+
+func (app *application) showProject(writer http.ResponseWriter, request *http.Request) {
+	id, err := strconv.Atoi(request.URL.Query().Get("id"))
+	if err != nil || id < 1 {
+		app.notFound(writer)
+		return
+	}
+
+	project, err := app.projects.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(writer)
+		} else {
+			app.serverError(writer, err)
+		}
+		return
+	}
+
+	app.render(writer, request, "table.page.tmpl", &templateData{
+		Project: project,
+	})
+
 }

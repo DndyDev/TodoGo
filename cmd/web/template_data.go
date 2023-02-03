@@ -9,8 +9,10 @@ import (
 )
 
 type templateData struct {
-	Note  *models.Note
-	Notes []*models.Note
+	Note     *models.Note
+	Notes    []*models.Note
+	Project  *models.Project
+	Projects []*models.Project
 }
 
 func newTemplateCashe(dir string) (map[string]*template.Template, error) {
