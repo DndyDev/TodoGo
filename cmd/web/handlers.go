@@ -35,7 +35,7 @@ func (app *application) showNote(writer http.ResponseWriter, request *http.Reque
 		return
 	}
 
-	note, err := app.notes.Get(id, 1)
+	note, err := app.notes.Get(id)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			app.notFound(writer)
@@ -51,26 +51,32 @@ func (app *application) showNote(writer http.ResponseWriter, request *http.Reque
 
 }
 
+func (app *application) formNote(
+	writer http.ResponseWriter, request *http.Request) {
+
+}
+
 func (app *application) createNote(
 	writer http.ResponseWriter, request *http.Request) {
-	if request.Method != http.MethodPost {
-		writer.Header().Set("Allow", http.MethodPost)
-		app.clientError(writer, http.StatusMethodNotAllowed)
-		return
-	}
+	// if request.Method != http.MethodPost {
+	// 	writer.Header().Set("Allow", http.MethodPost)
+	// 	app.clientError(writer, http.StatusMethodNotAllowed)
+	// 	return
+	// }
 
-	title := "История про улитку"
-	content := "Улитка выползла из раковины," +
-		"\nвытянула рожки,\nи опять подобрала их."
-	expires := "7"
+	title := request.FormValue("title")
+	content := request.FormValue("content")
+	expires := request.FormValue("expires")
+	projectId := request.FormValue("project")
+	statusId := request.FormValue("status")
 
-	id, err := app.notes.Insert(title, content, expires)
+	id, err := app.notes.Insert(title, content, expires, projectId, statusId)
 	if err != nil {
 		app.serverError(writer, err)
 		return
 	}
-	http.Redirect(writer, request, fmt.Sprintf("/note?id=%d", id),
-		http.StatusSeeOther)
+	// http.Redirect(writer, request, fmt.Sprintf("/note?id=%d", id),
+	// 	http.StatusSeeOther)
 }
 
 func (app *application) showProject(writer http.ResponseWriter, request *http.Request) {
@@ -89,9 +95,15 @@ func (app *application) showProject(writer http.ResponseWriter, request *http.Re
 		}
 		return
 	}
+	notes, err := app.notes.GetProjectNotes(id)
+	if err != nil {
+		app.serverError(writer, err)
+		return
+	}
 
 	app.render(writer, request, "table.page.tmpl", &templateData{
 		Project: project,
+		Notes:   notes,
 	})
 
 }

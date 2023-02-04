@@ -36,6 +36,6 @@ type Admin struct {
 }
 
 type Status struct {
-	ID         int
-	StatusName string
+	ID   int
+	Name string
 }

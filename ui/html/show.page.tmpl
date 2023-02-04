@@ -1,13 +1,12 @@
 {{template "base" .}}
 
-{{define "title"}}Заметка #{{.Note.ID}}{{end}}
+{{define "title"}}Заметка{{end}}
 
 {{define "main"}}
 <div class="snippet">
     {{with .Note}}
     <div class="metadata">
         <strong>{{.Title}}</strong>
-        <span>#{{.ID}}</span>
     </div>
     <pre><code>{{.Content}}</code></pre>
     <div class="metadata">

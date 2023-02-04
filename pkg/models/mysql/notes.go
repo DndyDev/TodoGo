@@ -41,11 +41,11 @@ func (model *NoteModel) Latest() ([]*models.Note, error) {
 	return notes, nil
 }
 
-func (model *NoteModel) Insert(title, content, expires string) (int, error) {
-	stmt := `INSERT INTO notes (title, content, created, expires) 
-	VALUES(?,?,UTC_TIMESTAMP(),DATE_ADD(UTC_TIMESTAMP(),INTERVAL ? DAY))`
+func (model *NoteModel) Insert(title, content, expires string, projectId, status_id int) (int, error) {
+	stmt := `INSERT INTO notes (title, content, created, expires,project_id,status_id) 
+	VALUES(?,?,UTC_TIMESTAMP(),DATE_ADD(UTC_TIMESTAMP(),INTERVAL ? DAY),?,?)`
 
-	result, err := model.DB.Exec(stmt, title, content, expires)
+	result, err := model.DB.Exec(stmt, title, content, expires, projectId, status_id)
 	if err != nil {
 		return 0, err
 	}
@@ -57,11 +57,11 @@ func (model *NoteModel) Insert(title, content, expires string) (int, error) {
 
 	return int(id), nil
 }
-func (model *NoteModel) Get(noteId int, projectId int) (*models.Note, error) {
+func (model *NoteModel) Get(id int) (*models.Note, error) {
 	stmt := `SELECT id, title, content, created, expires FROM notes 
-	WHERE expires > UTC_TIMESTAMP() AND id = ? AND project_id = ?`
+	WHERE expires > UTC_TIMESTAMP() AND id = ?`
 
-	row := model.DB.QueryRow(stmt, noteId, projectId)
+	row := model.DB.QueryRow(stmt, id)
 	note := &models.Note{}
 	err := row.Scan(&note.ID, &note.Title, &note.Content,
 		&note.Created, &note.Expires)
@@ -74,4 +74,34 @@ func (model *NoteModel) Get(noteId int, projectId int) (*models.Note, error) {
 	}
 
 	return note, nil
+}
+
+func (model *NoteModel) GetProjectNotes(projectId int) ([]*models.Note, error) {
+	stmt := `SELECT id, title, content,created, expires, project_id, status_id FROM notes
+	WHERE project_id = ?`
+
+	rows, err := model.DB.Query(stmt, projectId)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var notes []*models.Note
+
+	for rows.Next() {
+		note := &models.Note{}
+		err = rows.Scan(&note.ID, &note.Title, &note.Content, &note.Created,
+			&note.Expires, &note.ProjectID, &note.StatusID)
+		if err != nil {
+			return nil, err
+		}
+		notes = append(notes, note)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return notes, nil
+
 }

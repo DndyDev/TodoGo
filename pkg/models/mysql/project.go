@@ -44,3 +44,24 @@ func (model *ProjectModel) Get(id int) (*models.Project, error) {
 
 	return project, nil
 }
+
+func (model *ProjectModel) GetUserProjects(id int) ([]*models.Project, error) {
+	stmt := `SELECT id, title, web_user_id FROM projects 
+	WHERE web_user_id = ?`
+
+	rows, err := model.DB.Query(stmt, id)
+	var projects []*models.Project
+	for rows.Next() {
+		project := &models.Project{}
+		err = rows.Scan(&project.ID, &project.Title, project.UserID)
+		if err != nil {
+			return nil, err
+		}
+		projects = append(projects, project)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return projects, nil
+}

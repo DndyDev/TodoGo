@@ -1,12 +1,29 @@
 {{template "base" .}}
 
-{{define "title"}}Проект{{end}}
+{{define "title"}}{{.Project.Title}} {{end}}
 
 {{define "main"}}
 <div class="snippet">
     <div class="metadata">
+        <span>Проект</span>
+    <div class="metadata">
         <strong>{{.Project.Title}}</strong>
-        <span>#{{.Project.ID}}</span>
     </div>
 </div>
+{{if .Notes}}
+    <table>
+        <tr>
+            <th>Заметка</th>
+            <th>Создана</th>
+        </tr>
+        {{range .Notes}}
+        <tr>
+            <td><a href='/note?id={{.ID}}'>{{.Title}}</a></td>
+            <td>{{.Created}}</td>
+        </tr>
+        {{end}}
+    </table>
+    {{else}} 
+        <p>Пусто</p>
+    {{end}}
 {{end}}
