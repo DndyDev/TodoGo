@@ -11,7 +11,7 @@ type StatusModel struct {
 	DB *sql.DB
 }
 
-func (model *ProjectModel) Get(id int) (*models.Project, error) {
+func (model *StatusModel) Get(id int) (*models.Status, error) {
 	stmt := `SELECT id, status_name FROM todo_status 
 	WHERE id = ?`
 
@@ -29,10 +29,10 @@ func (model *ProjectModel) Get(id int) (*models.Project, error) {
 	return status, nil
 }
 
-func (model *ProjectModel) GetAllStatus(id int) ([]*models.Project, error) {
+func (model *StatusModel) GetAllStatus() ([]*models.Status, error) {
 	stmt := `SELECT id, status_name	 FROM todo_status`
 
-	rows, err := model.DB.Query(stmt, id)
+	rows, err := model.DB.Query(stmt)
 	var statuses []*models.Status
 	for rows.Next() {
 		status := &models.Status{}

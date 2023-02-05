@@ -13,6 +13,8 @@ type templateData struct {
 	Notes    []*models.Note
 	Project  *models.Project
 	Projects []*models.Project
+	Status   *models.Status
+	Statuses []*models.Status
 }
 
 func newTemplateCashe(dir string) (map[string]*template.Template, error) {

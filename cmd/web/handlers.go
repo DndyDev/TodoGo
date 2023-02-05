@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 
 	"net/http"
 	"strconv"
@@ -54,6 +53,28 @@ func (app *application) showNote(writer http.ResponseWriter, request *http.Reque
 func (app *application) formNote(
 	writer http.ResponseWriter, request *http.Request) {
 
+	statuses, err := app.statuses.GetAllStatus()
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(writer)
+		} else {
+			app.serverError(writer, err)
+		}
+		return
+	}
+	projects, err := app.projects.GetUserProjects(1)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(writer)
+		} else {
+			app.serverError(writer, err)
+		}
+		return
+	}
+	app.render(writer, request, "create_note.page.tmpl", &templateData{
+		Statuses: statuses,
+		Projects: projects,
+	})
 }
 
 func (app *application) createNote(
@@ -70,7 +91,7 @@ func (app *application) createNote(
 	projectId := request.FormValue("project")
 	statusId := request.FormValue("status")
 
-	id, err := app.notes.Insert(title, content, expires, projectId, statusId)
+	err := app.notes.Insert(title, content, expires, projectId, statusId)
 	if err != nil {
 		app.serverError(writer, err)
 		return

@@ -21,6 +21,7 @@ type application struct {
 	infoLog       *log.Logger
 	notes         *mysql.NoteModel
 	projects      *mysql.ProjectModel
+	statuses      *mysql.StatusModel
 	templateCache map[string]*template.Template
 }
 
@@ -58,6 +59,7 @@ func main() {
 		infoLog:       infoLog,
 		notes:         &mysql.NoteModel{DB: db},
 		projects:      &mysql.ProjectModel{DB: db},
+		statuses:      &mysql.StatusModel{DB: db},
 		templateCache: templateCache,
 	}
 

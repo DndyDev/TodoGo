@@ -4,11 +4,25 @@
  
 {{define "main"}}
     <h2>Новая заметка</h2>
-    <form method="POST" action="note/create">
+    <form method="POST" action="create">
             <label>Заголовок</label><br>
             <input type="text" name="title" /><br><br>
             <label>Текст</label><br>
             <textarea  name="content"></textarea><br><br>
+            <label>Срок</label><br>
+            <input type="number" name="expires" /><br><br>
+             <label>Проект</label><br>
+            <select name="project">
+              {{range .Projects}}
+                <option type = number value="{{.ID}}">{{.Title}}</option>
+                {{end}}
+            </select><br><br>
+             <label>Статус задачи</label><br>
+            <select name="status">
+            {{range .Statuses}}
+                <option type = number value="{{.ID}}">{{.Name}}</option>
+            {{end}}
+            </select><br><br>
             <input type="submit" value="Отправить" />
         </form>
 {{end}}

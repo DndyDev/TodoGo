@@ -53,7 +53,7 @@ func (model *ProjectModel) GetUserProjects(id int) ([]*models.Project, error) {
 	var projects []*models.Project
 	for rows.Next() {
 		project := &models.Project{}
-		err = rows.Scan(&project.ID, &project.Title, project.UserID)
+		err = rows.Scan(&project.ID, &project.Title, &project.UserID)
 		if err != nil {
 			return nil, err
 		}

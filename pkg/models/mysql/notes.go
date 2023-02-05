@@ -41,21 +41,23 @@ func (model *NoteModel) Latest() ([]*models.Note, error) {
 	return notes, nil
 }
 
-func (model *NoteModel) Insert(title, content, expires string, projectId, status_id int) (int, error) {
+func (model *NoteModel) Insert(title, content, expires,
+	projectId, statusId string) error {
 	stmt := `INSERT INTO notes (title, content, created, expires,project_id,status_id) 
 	VALUES(?,?,UTC_TIMESTAMP(),DATE_ADD(UTC_TIMESTAMP(),INTERVAL ? DAY),?,?)`
 
-	result, err := model.DB.Exec(stmt, title, content, expires, projectId, status_id)
+	_, err := model.DB.Exec(stmt, title, content, expires, projectId, statusId)
+
 	if err != nil {
-		return 0, err
+		return err
 	}
 
-	id, err := result.LastInsertId()
-	if err != nil {
-		return 0, err
-	}
+	// id, err := result.LastInsertId()
+	// if err != nil {
+	// 	return 0, err
+	// }
 
-	return int(id), nil
+	return nil
 }
 func (model *NoteModel) Get(id int) (*models.Note, error) {
 	stmt := `SELECT id, title, content, created, expires FROM notes 
