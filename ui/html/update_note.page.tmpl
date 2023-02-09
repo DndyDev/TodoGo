@@ -1,0 +1,38 @@
+{{template "base" .}}
+ 
+{{define "title"}}Создать заметку{{end}}
+ 
+{{define "main"}}
+{{$projectID := .Note.ProjectID}}
+{{$statusID := .Note.StatusID}}
+    <h2>Редактор заметки</h2>
+    <form method="POST" action="update">
+            <label>Заголовок</label><br>
+            <input type="text" name="title" value="{{.Note.Title}}"></input><br><br>
+            <label>Текст</label><br>
+            <textarea  name="content">{{.Note.Content}}</textarea><br><br>
+            <label>Срок</label><br>
+            <input type="number" name="expires" value="{{.Note.Expires}}"></input><br><br>
+             <label>Проект</label><br>
+            <select name="project">
+              {{range $key, $project :=  .Projects}}
+                {{if eq $projectID  $project.ID}}
+                <option type = number selected value="{{$project.ID}}">{{$project.Title}}</option>
+                {{else}}
+                <option type = number value="{{$project.ID}}">{{$project.Title}}</option>
+                {{end}}
+                {{end}}
+            </select><br><br>
+             <label>Статус задачи</label><br>
+            <select name="status">
+            {{range $key, $status := .Statuses}}
+                {{if eq $statusID  $status.ID}}
+                <option type = number selected value="{{$status.ID}}">{{$status.Name}}</option>
+                {{else}}
+                <option type = number value="{{$status.ID}}">{{$status.Name}}</option>
+                {{end}}
+            {{end}}
+            </select><br><br>
+            <input type="submit" value="Отправить" />
+        </form>
+{{end}}
