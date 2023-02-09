@@ -96,16 +96,6 @@ func (app *application) formUpdateNote(
 		return
 	}
 
-	// project, err := app.projects.Get(note.ProjectID)
-	// if err != nil {
-	// 	if errors.Is(err, models.ErrNoRecord) {
-	// 		app.notFound(writer)
-	// 	} else {
-	// 		app.serverError(writer, err)
-	// 	}
-	// 	return
-	// }
-
 	statuses, err := app.statuses.GetAllStatus()
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
@@ -175,6 +165,18 @@ func (app *application) updateNote(
 	}
 	http.Redirect(writer, request, fmt.Sprintf("/note?id=%d", id),
 		http.StatusSeeOther)
+}
+
+func (app *application) deleteNote(
+	writer http.ResponseWriter, request *http.Request) {
+	id, err := strconv.Atoi(request.URL.Query().Get("id"))
+	if err != nil || id < 1 {
+		app.notFound(writer)
+		return
+	}
+	err = app.notes.Delete(id)
+	// http.Redirect(writer, request, fmt.Sprintf("/"),
+	// 	http.StatusSeeOther)
 }
 
 func (app *application) showProject(writer http.ResponseWriter, request *http.Request) {

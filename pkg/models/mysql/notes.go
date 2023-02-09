@@ -131,3 +131,16 @@ func (model *NoteModel) Put(title, content, expires,
 	return int(id), nil
 
 }
+
+func (model *NoteModel) Delete(id int) error {
+	stmt := `DELETE FROM notes WHERE id = ?`
+
+	_, err := model.DB.Exec(stmt, id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}

@@ -14,5 +14,7 @@
         <time>Срок: {{.Expires}}</time>
     </div>
 </div>
-  {{end}}
+<a href="/note/form/update?id={{.ID}}">Изменить</a><br>
+<a href="/note/delete?id={{.ID}}"></a>
+{{end}}
 {{end}}

@@ -9,11 +9,13 @@ import (
 func (app *application) routes() *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", app.home)
+
 	mux.HandleFunc("/note", app.showNote)
 	mux.HandleFunc("/note/create", app.createNote)
 	mux.HandleFunc("/note/form", app.formNote)
 	mux.HandleFunc("/note/form/update", app.formUpdateNote)
 	mux.HandleFunc("/note/update", app.updateNote)
+	mux.HandleFunc("/note/delete", app.deleteNote)
 
 	mux.HandleFunc("/project", app.showProject)
 
