@@ -175,8 +175,16 @@ func (app *application) deleteNote(
 		return
 	}
 	err = app.notes.Delete(id)
-	// http.Redirect(writer, request, fmt.Sprintf("/"),
-	// 	http.StatusSeeOther)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(writer)
+		} else {
+			app.serverError(writer, err)
+		}
+		return
+	}
+	http.Redirect(writer, request, fmt.Sprintf("/"),
+		http.StatusSeeOther)
 }
 
 func (app *application) showProject(writer http.ResponseWriter, request *http.Request) {

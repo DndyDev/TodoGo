@@ -14,7 +14,8 @@ type NoteModel struct {
 
 func (model *NoteModel) Latest() ([]*models.Note, error) {
 	stmt := `SELECT id, title, content, created, expires FROM notes 
-	WHERE expires > UTC_TIMESTAMP() ORDER BY created DESC LIMIT 10`
+	WHERE  is_delete = 0 AND 
+	expires > UTC_TIMESTAMP() ORDER BY created DESC LIMIT 10 `
 
 	rows, err := model.DB.Query(stmt)
 	if err != nil {
@@ -63,7 +64,7 @@ func (model *NoteModel) Insert(title, content, expires,
 }
 func (model *NoteModel) Get(id int) (*models.Note, error) {
 	stmt := `SELECT id, title, content, created, expires, project_id, status_id FROM notes 
-	WHERE expires > UTC_TIMESTAMP() AND id = ?`
+	WHERE expires > UTC_TIMESTAMP() AND id = ? AND is_delete = 0`
 
 	row := model.DB.QueryRow(stmt, id)
 	note := &models.Note{}
@@ -82,7 +83,7 @@ func (model *NoteModel) Get(id int) (*models.Note, error) {
 
 func (model *NoteModel) GetProjectNotes(projectId int) ([]*models.Note, error) {
 	stmt := `SELECT id, title, content,created, expires, project_id, status_id FROM notes
-	WHERE project_id = ?`
+	WHERE project_id = ? AND is_delete = 0 AND expires > UTC_TIMESTAMP()`
 
 	rows, err := model.DB.Query(stmt, projectId)
 
@@ -133,9 +134,9 @@ func (model *NoteModel) Put(title, content, expires,
 }
 
 func (model *NoteModel) Delete(id int) error {
-	stmt := `DELETE FROM notes WHERE id = ?`
 
-	_, err := model.DB.Exec(stmt, id)
+	stmt := `UPDATE notes SET is_delete = ? WHERE id = ?`
+	_, err := model.DB.Exec(stmt, 1, id)
 
 	if err != nil {
 		return err
