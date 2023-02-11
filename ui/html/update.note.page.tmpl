@@ -6,7 +6,7 @@
 {{$projectID := .Note.ProjectID}}
 {{$statusID := .Note.StatusID}}
     <h2>Редактор заметки</h2>
-    <form method="POST" action="update">
+    <form method="POST" action="data/update?id={{.Note.ID}}">
             <label>Заголовок</label><br>
             <input type="text" name="title" value="{{.Note.Title}}"></input><br><br>
             <label>Текст</label><br>

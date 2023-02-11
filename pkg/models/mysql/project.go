@@ -29,7 +29,7 @@ func (model *ProjectModel) Insert(title string, user_id int) (int, error) {
 }
 func (model *ProjectModel) Get(id int) (*models.Project, error) {
 	stmt := `SELECT id, title, web_user_id FROM projects 
-	WHERE id = ?`
+	WHERE id = ? AND is_delete = 0`
 
 	row := model.DB.QueryRow(stmt, id)
 	project := &models.Project{}
@@ -64,4 +64,36 @@ func (model *ProjectModel) GetUserProjects(id int) ([]*models.Project, error) {
 	}
 
 	return projects, nil
+}
+
+func (model *ProjectModel) Put(title string) error {
+	stmt := `UPDATE projects title = ?)`
+
+	_, err := model.DB.Exec(stmt, title)
+
+	if err != nil {
+		return err
+	}
+
+	// id, err := result.LastInsertId()
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func (model *ProjectModel) Delete(id int) error {
+
+	stmt := `UPDATE projects SET is_delete = ? WHERE id = ?`
+	_, err := model.DB.Exec(stmt, 1, id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
 }

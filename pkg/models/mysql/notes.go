@@ -111,25 +111,24 @@ func (model *NoteModel) GetProjectNotes(projectId int) ([]*models.Note, error) {
 
 }
 
-func (model *NoteModel) Put(title, content, expires,
-	projectId, statusId string) (int, error) {
-	stmt := `UPDATE notes title = ?, content = ?,expires = ?,
-	project_id = ?,status_id = ?)`
+func (model *NoteModel) Put(id int, title string, content string, expires string,
+	projectId string, statusId string) error {
+	stmt := `UPDATE notes SET title = ?, content = ?,
+	expires = DATE_ADD(UTC_TIMESTAMP(),INTERVAL ? DAY),
+	project_id = ?,status_id = ? WHERE id = ?`
 
-	result, err := model.DB.Exec(stmt, title, content, expires,
-		projectId, statusId)
-
-	if err != nil {
-		return 0, err
-	}
-
-	id, err := result.LastInsertId()
+	_, err := model.DB.Exec(stmt, title, content, expires,
+		projectId, statusId, id)
 
 	if err != nil {
-		return 0, err
+		return err
 	}
 
-	return int(id), nil
+	if err != nil {
+		return err
+	}
+
+	return nil
 
 }
 
