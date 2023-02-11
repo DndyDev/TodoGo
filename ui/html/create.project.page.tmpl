@@ -1,0 +1,13 @@
+{{template "base" .}}
+ 
+{{define "title"}}Создать проект{{end}}
+ 
+{{define "main"}}
+    <h2>Новая заметка</h2>
+    <form method="POST" action="create">
+            <label>Название</label><br>
+            <input type="text" name="title" /><br><br>
+            </select><br><br>
+            <input type="submit" value="Отправить" />
+        </form>
+{{end}}

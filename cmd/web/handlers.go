@@ -220,7 +220,11 @@ func (app *application) showProject(
 	})
 
 }
+func (app *application) formProject(
+	writer http.ResponseWriter, request *http.Request) {
 
+	app.render(writer, request, "create.project.page.tmpl", &templateData{})
+}
 func (app *application) createProject(
 	writer http.ResponseWriter, request *http.Request) {
 	if request.Method != http.MethodPost {
@@ -247,10 +251,15 @@ func (app *application) updateProject(
 		app.clientError(writer, http.StatusMethodNotAllowed)
 		return
 	}
+	id, err := strconv.Atoi(request.URL.Query().Get("id"))
+	if err != nil || id < 1 {
+		app.notFound(writer)
+		return
+	}
 
 	title := request.FormValue("title")
 	// userId := 1
-	err := app.projects.Put(title)
+	err = app.projects.Put(id, title)
 	if err != nil {
 		app.serverError(writer, err)
 		return

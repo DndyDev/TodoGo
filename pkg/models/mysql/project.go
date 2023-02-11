@@ -66,10 +66,10 @@ func (model *ProjectModel) GetUserProjects(id int) ([]*models.Project, error) {
 	return projects, nil
 }
 
-func (model *ProjectModel) Put(title string) error {
-	stmt := `UPDATE projects title = ?)`
+func (model *ProjectModel) Put(id int, title string) error {
+	stmt := `UPDATE projects SET title = ? WHERE id = ?)`
 
-	_, err := model.DB.Exec(stmt, title)
+	_, err := model.DB.Exec(stmt, title, id)
 
 	if err != nil {
 		return err

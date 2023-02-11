@@ -13,11 +13,13 @@ func (app *application) routes() *http.ServeMux {
 	mux.HandleFunc("/note", app.showNote)
 	mux.HandleFunc("/note/create", app.createNote)
 	mux.HandleFunc("/note/form", app.formNote)
-	mux.HandleFunc("/note/form/data", app.formUpdateNote)
-	mux.HandleFunc("/note/form/data/update", app.updateNote)
+	mux.HandleFunc("/note/data", app.formUpdateNote)
+	mux.HandleFunc("/note/update", app.updateNote)
 	mux.HandleFunc("/note/delete", app.deleteNote)
 
 	mux.HandleFunc("/project", app.showProject)
+	mux.HandleFunc("/project/create", app.createProject)
+	mux.HandleFunc("/project/form", app.formProject)
 
 	fileServer := http.FileServer(neuteredFileSystem{http.Dir("./ui/static")})
 	mux.Handle("/static", http.NotFoundHandler())
