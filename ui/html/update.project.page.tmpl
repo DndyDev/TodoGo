@@ -3,10 +3,12 @@
 {{define "title"}}Создать проект{{end}}
  
 {{define "main"}}
-    <h2>Новый проект</h2>
-    <form method="POST" action="create">
+    <h2>Редактор проекта</h2>
+    {{with .Project}}
+    <form method="POST" action="update?id={{.ID}}">
             <label>Название</label><br>
-            <input type="text" name="title" /><br><br>
+            <input type="text" name="title" value= "{{.Title}}" /><br><br>
             <input type="submit" value="Отправить" />
         </form>
+        {{end}}
 {{end}}

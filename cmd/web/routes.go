@@ -20,6 +20,9 @@ func (app *application) routes() *http.ServeMux {
 	mux.HandleFunc("/project", app.showProject)
 	mux.HandleFunc("/project/create", app.createProject)
 	mux.HandleFunc("/project/form", app.formProject)
+	mux.HandleFunc("/project/data", app.formUpdateProject)
+	mux.HandleFunc("/project/update", app.updateProject)
+	mux.HandleFunc("/project/delete", app.deleteProject)
 
 	fileServer := http.FileServer(neuteredFileSystem{http.Dir("./ui/static")})
 	mux.Handle("/static", http.NotFoundHandler())

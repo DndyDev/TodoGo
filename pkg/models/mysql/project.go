@@ -67,16 +67,13 @@ func (model *ProjectModel) GetUserProjects(id int) ([]*models.Project, error) {
 }
 
 func (model *ProjectModel) Put(id int, title string) error {
-	stmt := `UPDATE projects SET title = ? WHERE id = ?)`
+	stmt := `UPDATE projects SET title = ? WHERE id = ?`
 
 	_, err := model.DB.Exec(stmt, title, id)
 
 	if err != nil {
 		return err
 	}
-
-	// id, err := result.LastInsertId()
-
 	if err != nil {
 		return err
 	}

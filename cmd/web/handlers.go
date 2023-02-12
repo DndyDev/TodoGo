@@ -225,6 +225,28 @@ func (app *application) formProject(
 
 	app.render(writer, request, "create.project.page.tmpl", &templateData{})
 }
+func (app *application) formUpdateProject(
+	writer http.ResponseWriter, request *http.Request) {
+	id, err := strconv.Atoi(request.URL.Query().Get("id"))
+	if err != nil || id < 1 {
+		app.notFound(writer)
+		return
+
+	}
+	project, err := app.projects.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(writer)
+		} else {
+			app.serverError(writer, err)
+		}
+		return
+	}
+
+	app.render(writer, request, "update.project.page.tmpl", &templateData{
+		Project: project,
+	})
+}
 func (app *application) createProject(
 	writer http.ResponseWriter, request *http.Request) {
 	if request.Method != http.MethodPost {
@@ -258,17 +280,31 @@ func (app *application) updateProject(
 	}
 
 	title := request.FormValue("title")
-	// userId := 1
 	err = app.projects.Put(id, title)
 	if err != nil {
 		app.serverError(writer, err)
 		return
 	}
-	// http.Redirect(writer, request, fmt.Sprintf("/project?id=%d", id),
-	// 	http.StatusSeeOther)
+	http.Redirect(writer, request, fmt.Sprintf("/project?id=%d", id),
+		http.StatusSeeOther)
 }
 
 func (app *application) deleteProject(
 	writer http.ResponseWriter, request *http.Request) {
-
+	id, err := strconv.Atoi(request.URL.Query().Get("id"))
+	if err != nil || id < 1 {
+		app.notFound(writer)
+		return
+	}
+	err = app.projects.Delete(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(writer)
+		} else {
+			app.serverError(writer, err)
+		}
+		return
+	}
+	http.Redirect(writer, request, fmt.Sprintf("/"),
+		http.StatusSeeOther)
 }
