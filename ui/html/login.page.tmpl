@@ -1,28 +1,29 @@
-{{define "base"}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{template "title" .}}  — ToDoGo</title>
+    <title>Вход — ToDoGo</title>
     <link rel="stylesheet" href="/static/css/main.css">
     <link rel="shortcut icon" href="/static/img/favicon.ico">
 </head>
 <body>
     <header>
-        <h1><a href="/home">Задачи</a></h1>
+        <h1>Вход</h1>
     </header>
     <nav>
-    <a href="/home">Домашняя страница</a>
-    <a href="/project/form">Создать проект</a>
-    <a href="/note/form">Создать заметку</a>
+    <a href="/registration">Регистрация</a>
     </nav>
     <main>
-        {{template "main" .}}
+    <form method="POST" action = "/da">
+        <label>Логин</label>
+        <input type="text" required name ="login">
+        <label>Пароль</label>
+        <input type="password" required name ="password">
+        <input type="submit" value="Войти">
+    </form>
     </main>
-    {{template "footer" .}}
     <script src="/static/js/main" type="text/javascript"></script>
 </body>
 </html>
-{{end}}

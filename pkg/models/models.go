@@ -22,6 +22,7 @@ type User struct {
 	Password string
 	LastName string
 	Email    string
+	IsBan    bool
 }
 
 type Project struct {

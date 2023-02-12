@@ -8,7 +8,12 @@ import (
 
 func (app *application) routes() *http.ServeMux {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", app.home)
+	mux.HandleFunc("/", app.login)
+	mux.HandleFunc("/validation", app.validation)
+	mux.HandleFunc("/registration", app.registration)
+	mux.HandleFunc("/home", app.home)
+
+	mux.HandleFunc("/user/create", app.createUser)
 
 	mux.HandleFunc("/note", app.showNote)
 	mux.HandleFunc("/note/create", app.createNote)

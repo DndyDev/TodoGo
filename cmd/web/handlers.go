@@ -9,9 +9,64 @@ import (
 	"dandydev.com/todogo/pkg/models"
 )
 
+func (app *application) login(writer http.ResponseWriter, request *http.Request) {
+	if request.URL.Path != "/" {
+		app.notFound(writer)
+		return
+	}
+	app.render(writer, request, "login.page.tmpl", &templateData{})
+}
+func (app *application) validation(
+	writer http.ResponseWriter, request *http.Request) {
+	if request.Method != http.MethodPost {
+		writer.Header().Set("Allow", http.MethodPost)
+		app.clientError(writer, http.StatusMethodNotAllowed)
+		return
+	}
+
+	login := request.FormValue("login")
+	password := request.FormValue("password")
+
+	user, err := app.users.Get(login, password)
+	if err != nil {
+		app.serverError(writer, err)
+		return
+	}
+	id := user.ID
+	http.Redirect(writer, request, fmt.Sprintf("/home?id=%d", id),
+		http.StatusSeeOther)
+}
+
+func (app *application) registration(
+	writer http.ResponseWriter, request *http.Request) {
+	app.render(writer, request, "registration.page.tmpl", &templateData{})
+
+}
+
+func (app *application) createUser(
+	writer http.ResponseWriter, request *http.Request) {
+	if request.Method != http.MethodPost {
+		writer.Header().Set("Allow", http.MethodPost)
+		app.clientError(writer, http.StatusMethodNotAllowed)
+		return
+	}
+
+	login := request.FormValue("login")
+	password := request.FormValue("password")
+	lastName := request.FormValue("lastName")
+	email := request.FormValue("email")
+
+	err := app.users.Insert(login, lastName, email, password)
+	if err != nil {
+		app.serverError(writer, err)
+		return
+	}
+	http.Redirect(writer, request, fmt.Sprintf("/"),
+		http.StatusSeeOther)
+}
 func (app *application) home(writer http.ResponseWriter, request *http.Request) {
 
-	if request.URL.Path != "/" {
+	if request.URL.Path != "/home" {
 		app.notFound(writer)
 		return
 	}
@@ -187,7 +242,7 @@ func (app *application) deleteNote(
 		}
 		return
 	}
-	http.Redirect(writer, request, fmt.Sprintf("/"),
+	http.Redirect(writer, request, fmt.Sprintf("/home"),
 		http.StatusSeeOther)
 }
 
@@ -305,6 +360,6 @@ func (app *application) deleteProject(
 		}
 		return
 	}
-	http.Redirect(writer, request, fmt.Sprintf("/"),
+	http.Redirect(writer, request, fmt.Sprintf("/home"),
 		http.StatusSeeOther)
 }

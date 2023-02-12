@@ -15,6 +15,10 @@ type templateData struct {
 	Projects []*models.Project
 	Status   *models.Status
 	Statuses []*models.Status
+	User     *models.User
+	Users    []*models.User
+	Admin    *models.Admin
+	Admins   []*models.Admin
 }
 
 func newTemplateCashe(dir string) (map[string]*template.Template, error) {

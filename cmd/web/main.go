@@ -22,6 +22,8 @@ type application struct {
 	notes         *mysql.NoteModel
 	projects      *mysql.ProjectModel
 	statuses      *mysql.StatusModel
+	users         *mysql.UserModel
+	admins        *mysql.AdminModel
 	templateCache map[string]*template.Template
 }
 
@@ -60,6 +62,8 @@ func main() {
 		notes:         &mysql.NoteModel{DB: db},
 		projects:      &mysql.ProjectModel{DB: db},
 		statuses:      &mysql.StatusModel{DB: db},
+		users:         &mysql.UserModel{DB: db},
+		admins:        &mysql.AdminModel{DB: db},
 		templateCache: templateCache,
 	}
 
@@ -69,7 +73,7 @@ func main() {
 		Handler:  app.routes(),
 	}
 
-	infoLog.Printf("Server start on %s", *addres)
+	infoLog.Printf("Server start on localhost%s", *addres)
 	err = srv.ListenAndServe()
 	errorLog.Fatal(err)
 }
