@@ -141,6 +141,36 @@ func (model *NoteModel) GetAllProjectNotes(projectId int) ([]*models.Note, error
 	return notes, nil
 
 }
+func (model *NoteModel) GetProjectNotesWitchStatus(projectId, statusId int) ([]*models.Note, error) {
+	stmt := `SELECT id, title, content,created, expires, project_id, status_id 
+	FROM notes
+	WHERE project_id = ? AND is_delete = 0 AND status_id = ?`
+
+	rows, err := model.DB.Query(stmt, projectId, statusId)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var notes []*models.Note
+
+	for rows.Next() {
+		note := &models.Note{}
+		err = rows.Scan(&note.ID, &note.Title, &note.Content, &note.Created,
+			&note.Expires, &note.ProjectID, &note.StatusID)
+		if err != nil {
+			return nil, err
+		}
+		notes = append(notes, note)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return notes, nil
+
+}
 
 func (model *NoteModel) Put(id int, title string, content string, expires string,
 	projectId string, statusId string) error {

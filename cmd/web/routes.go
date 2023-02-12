@@ -23,6 +23,7 @@ func (app *application) routes() *http.ServeMux {
 	mux.HandleFunc("/note/delete", app.deleteNote)
 
 	mux.HandleFunc("/project", app.showProject)
+	mux.HandleFunc("/projects", app.showProjects)
 	mux.HandleFunc("/project/create", app.createProject)
 	mux.HandleFunc("/project/form", app.formProject)
 	mux.HandleFunc("/project/data", app.formUpdateProject)

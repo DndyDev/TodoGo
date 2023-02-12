@@ -1,0 +1,22 @@
+{{template "base" .}}
+ 
+{{define "title"}}Проекты{{end}}
+ 
+{{define "main"}}
+    <h2>Проекты</h2>
+    {{if .Projects}}
+    <table>
+        <tr>
+            <th>Заголовок</th>
+        </tr>
+        {{range .Projects}}
+        <tr>
+            <td><a href='/project?id={{.ID}}'>{{.Title}}</a></td>
+        </tr>
+        {{end}}
+    </table>
+    {{else}} 
+        <p>Пусто</p>
+    {{end}}
+    <a href="/note/form">Создать заметку</a>
+{{end}}

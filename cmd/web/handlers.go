@@ -246,6 +246,17 @@ func (app *application) deleteNote(
 		http.StatusSeeOther)
 }
 
+func (app *application) showProjects(
+	writer http.ResponseWriter, request *http.Request) {
+	projects, err := app.projects.GetUserProjects(1)
+	if err != nil {
+		app.serverError(writer, err)
+		return
+	}
+	app.render(writer, request, "list.project.page.tmpl", &templateData{
+		Projects: projects,
+	})
+}
 func (app *application) showProject(
 	writer http.ResponseWriter, request *http.Request) {
 	id, err := strconv.Atoi(request.URL.Query().Get("id"))
