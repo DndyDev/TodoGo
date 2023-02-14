@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель администратора — ToDoGo</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+</head>
+<body>
+    <header>
+        <h1>Панель администратора</h1>
+    </header>
+    <main>
+       <h2>Пользователи</h2>
+    {{if .Users}}
+    <table>
+        <tr>
+            <th>Имя пользователя</th>
+            <th></th>
+        </tr>
+        {{range .Users}}
+        <tr>
+            <td><a href='/home?id={{.ID}}'>{{.Nick}}</a></td>
+            {{if .IsBan}}
+            <td><a disabled>Забанить</td>
+            {{else}}
+            <td><a href='/ban?id={{.ID}}'>Забанить</td>
+            {{end}}
+        </tr>
+        {{end}}
+    </table>
+    {{else}} 
+        <p>На сайте ещё нет пользователей</p>
+    {{end}}
+    </main>
+    <script src="/static/js/main" type="text/javascript"></script>
+</body>
+</html>

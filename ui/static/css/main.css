@@ -61,6 +61,11 @@ a:hover {
     text-decoration: underline;
 }
 
+a[disabled] {
+	pointer-events: none;
+	color: grey;
+}
+
 textarea, input:not([type="submit"]) {
     font-size: 18px;
     font-family: "Ubuntu Mono", monospace;

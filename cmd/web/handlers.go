@@ -42,6 +42,80 @@ func (app *application) registration(
 	app.render(writer, request, "registration.page.tmpl", &templateData{})
 
 }
+func (app *application) adminLogin(
+	writer http.ResponseWriter, request *http.Request) {
+	app.render(writer, request, "admin.page.tmpl", &templateData{})
+}
+func (app *application) adminValid(
+	writer http.ResponseWriter, request *http.Request) {
+	if request.Method != http.MethodPost {
+		writer.Header().Set("Allow", http.MethodPost)
+		app.clientError(writer, http.StatusMethodNotAllowed)
+		return
+	}
+
+	login := request.FormValue("login")
+	password := request.FormValue("password")
+
+	_, err := app.admins.Get(login, password)
+	if err != nil {
+		app.serverError(writer, err)
+		return
+	}
+	http.Redirect(writer, request, fmt.Sprintf("/admin/users"),
+		http.StatusSeeOther)
+}
+func (app *application) banUser(
+	writer http.ResponseWriter, request *http.Request) {
+	id, err := strconv.Atoi(request.URL.Query().Get("id"))
+	if err != nil || id < 1 {
+		app.notFound(writer)
+		return
+	}
+	err = app.users.Ban(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(writer)
+		} else {
+			app.serverError(writer, err)
+		}
+		return
+	}
+	http.Redirect(writer, request, fmt.Sprintf("/admin/users"),
+		http.StatusSeeOther)
+}
+func (app *application) unBanUser(
+	writer http.ResponseWriter, request *http.Request) {
+	id, err := strconv.Atoi(request.URL.Query().Get("id"))
+	if err != nil || id < 1 {
+		app.notFound(writer)
+		return
+	}
+	err = app.users.UnBan(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(writer)
+		} else {
+			app.serverError(writer, err)
+		}
+		return
+	}
+	http.Redirect(writer, request, fmt.Sprintf("/admin/users"),
+		http.StatusSeeOther)
+}
+
+func (app *application) showAdminPanel(
+	writer http.ResponseWriter, request *http.Request) {
+
+	users, err := app.users.GetAll()
+	if err != nil {
+		app.serverError(writer, err)
+		return
+	}
+	app.render(writer, request, "users.page.tmpl", &templateData{
+		Users: users,
+	})
+}
 
 func (app *application) createUser(
 	writer http.ResponseWriter, request *http.Request) {
@@ -279,10 +353,16 @@ func (app *application) showProject(
 		app.serverError(writer, err)
 		return
 	}
+	statuses, err := app.statuses.GetAllStatus()
+	if err != nil {
+		app.serverError(writer, err)
+		return
+	}
 
 	app.render(writer, request, "project.page.tmpl", &templateData{
-		Project: project,
-		Notes:   notes,
+		Project:  project,
+		Notes:    notes,
+		Statuses: statuses,
 	})
 
 }

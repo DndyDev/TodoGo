@@ -15,6 +15,11 @@ func (app *application) routes() *http.ServeMux {
 
 	mux.HandleFunc("/user/create", app.createUser)
 
+	mux.HandleFunc("/admin", app.adminLogin)
+	mux.HandleFunc("/admin/validation", app.adminValid)
+	mux.HandleFunc("/admin/users", app.showAdminPanel)
+	mux.HandleFunc("/ban", app.banUser)
+
 	mux.HandleFunc("/note", app.showNote)
 	mux.HandleFunc("/note/create", app.createNote)
 	mux.HandleFunc("/note/form", app.formNote)

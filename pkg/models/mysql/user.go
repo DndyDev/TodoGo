@@ -25,7 +25,7 @@ func (model *UserModel) Insert(nickname, lastName, email, password string) error
 func (model *UserModel) Get(nickname, password string) (*models.User, error) {
 	stmt := `SELECT id,nickname, last_name,email,user_password,is_ban 
 	FROM web_users 
-	WHERE nickname = ? AND user_password = ?`
+	WHERE nickname = ? AND user_password = ? AND is_ban = 0`
 
 	row := model.DB.QueryRow(stmt, nickname, password)
 	user := &models.User{}
@@ -42,7 +42,7 @@ func (model *UserModel) Get(nickname, password string) (*models.User, error) {
 	return user, nil
 }
 
-func (model *UserModel) GetAll(id int) ([]*models.User, error) {
+func (model *UserModel) GetAll() ([]*models.User, error) {
 	stmt := `SELECT * FROM web_users `
 
 	rows, err := model.DB.Query(stmt)
@@ -63,4 +63,22 @@ func (model *UserModel) GetAll(id int) ([]*models.User, error) {
 	}
 
 	return users, nil
+}
+func (model *UserModel) Ban(id int) error {
+	stmt := `UPDATE web_users SET is_ban = 1 WHERE id = ?`
+
+	_, err := model.DB.Query(stmt, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (model *UserModel) UnBan(id int) error {
+	stmt := `UPDATE web_users SET is_ban = 0 WHERE id = ?`
+
+	_, err := model.DB.Query(stmt, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }

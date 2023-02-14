@@ -12,8 +12,8 @@ type AdminModel struct {
 }
 
 func (model *AdminModel) Get(nickname, password string) (*models.Admin, error) {
-	stmt := `SELECT id, nicakname, admin_password FROM web_admins 
-	WHERE nickname = ? AND password = ?`
+	stmt := `SELECT id, nickname, admin_password FROM web_admins 
+	WHERE nickname = ? AND admin_password = ?`
 
 	row := model.DB.QueryRow(stmt, nickname, password)
 	admin := &models.Admin{}

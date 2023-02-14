@@ -1,0 +1,23 @@
+{{template "base" .}}
+ 
+{{define "title"}}Домашняя страница{{end}}
+ 
+{{define "main"}}
+    <h2>Последние задачи</h2>
+    {{if .Notes}}
+    <table>
+        <tr>
+            <th>Заголовок</th>
+            <th>Создан</th>
+        </tr>
+        {{range .Notes}}
+        <tr>
+            <td><a href='/note?id={{.ID}}'>{{.Title}}</a></td>
+            <td>{{.Created}}</td>
+        </tr>
+        {{end}}
+    </table>
+    {{else}} 
+        <p>Пусто</p>
+    {{end}}
+{{end}}

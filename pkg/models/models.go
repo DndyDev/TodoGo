@@ -33,7 +33,7 @@ type Project struct {
 type Admin struct {
 	ID       int
 	Nick     string
-	Password int
+	Password string
 }
 
 type Status struct {

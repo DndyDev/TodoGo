@@ -3,6 +3,8 @@
 {{define "title"}}{{.Project.Title}} {{end}}
 
 {{define "main"}}
+{{$notes := .Notes}}
+{{$statuses := .Statuses}}
 <div class="snippet">
     <div class="metadata">
         <span>Проект</span>
@@ -10,16 +12,23 @@
         <strong>{{.Project.Title}}</strong>
     </div>
 </div>
-{{if .Notes}}
+{{if $notes}}
     <table>
         <tr>
             <th>Заметка</th>
+            <th>Статус</th>
             <th>Создана</th>
         </tr>
-        {{range .Notes}}
+        {{range $key, $note := $notes}}
+        {{$statusID := $note.StatusID}}
         <tr>
-            <td><a href='/note?id={{.ID}}'>{{.Title}}</a></td>
-            <td>{{.Created}}</td>
+            <td><a href='/note?id={{.ID}}'>{{$note.Title}}</a></td>
+            {{range $key, $status := $statuses}}
+              {{if eq $status.ID $statusID }}
+                <td>{{$status.Name}}<td>
+              {{end}}
+            {{end}}
+            <td>{{$note.Created}}</td>
         </tr>
         {{end}}
     </table>
