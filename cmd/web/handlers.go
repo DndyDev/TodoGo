@@ -366,6 +366,47 @@ func (app *application) showProject(
 	})
 
 }
+func (app *application) searchNotes(
+	writer http.ResponseWriter, request *http.Request) {
+
+	projectId, err := strconv.Atoi(request.URL.Query().Get("id"))
+	if err != nil || projectId < 1 {
+		app.notFound(writer)
+		return
+	}
+
+	projects, err := app.projects.GetUserProjects(1)
+	if err != nil {
+		app.serverError(writer, err)
+		return
+	}
+	statuses, err := app.statuses.GetAllStatus()
+	if err != nil {
+		app.serverError(writer, err)
+		return
+	}
+
+	app.render(writer, request, "search.page.tmpl", &templateData{
+		Projects: projects,
+		Statuses: statuses,
+	})
+}
+func (app *application) showNotesToStatus(
+	writer http.ResponseWriter, request *http.Request) {
+
+	projectId := request.FormValue("project")
+	statusId := request.FormValue("status")
+
+	notes, err := app.notes.GetProjectNotesWitchStatus(projectId, statusId)
+	if err != nil {
+		app.serverError(writer, err)
+		return
+	}
+
+	app.render(writer, request, "list.notes.page.tmpl", &templateData{
+		Notes: notes,
+	})
+}
 func (app *application) formProject(
 	writer http.ResponseWriter, request *http.Request) {
 

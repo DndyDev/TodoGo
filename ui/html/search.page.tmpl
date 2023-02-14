@@ -1,23 +1,22 @@
 {{template "base" .}}
  
-{{define "title"}}Домашняя страница{{end}}
+{{define "title"}}Поиск по статусу{{end}}
  
 {{define "main"}}
-    <h2>Последние задачи</h2>
-    {{if .Notes}}
-    <table>
-        <tr>
-            <th>Заголовок</th>
-            <th>Создан</th>
-        </tr>
-        {{range .Notes}}
-        <tr>
-            <td><a href='/note?id={{.ID}}'>{{.Title}}</a></td>
-            <td>{{.Created}}</td>
-        </tr>
-        {{end}}
-    </table>
-    {{else}} 
-        <p>Пусто</p>
-    {{end}}
+  <h2>Последние задачи</h2>
+  <form  method="POST" action="/search/notes">
+    <label>Проект</label><br>
+    <select name="project">
+      {{range $key, $project := .Projects}}
+        <option type = number value="{{$project.ID}}">{{$project.Title}}</option>
+      {{end}}
+    </select><br><br>
+     <label>Выберите статус</label><br>
+     <select name="status">
+      {{range $key, $status := .Statuses}}
+      <option type = number value="{{$status.ID}}">{{$status.Name}}</option>
+      {{end}}
+     </select><br><br>
+     <input type="submit" value="Отправить" />
+  </form>
 {{end}}

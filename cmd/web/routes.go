@@ -20,6 +20,9 @@ func (app *application) routes() *http.ServeMux {
 	mux.HandleFunc("/admin/users", app.showAdminPanel)
 	mux.HandleFunc("/ban", app.banUser)
 
+	mux.HandleFunc("/search", app.searchNotes)
+	mux.HandleFunc("/search/notes", app.showNotesToStatus)
+
 	mux.HandleFunc("/note", app.showNote)
 	mux.HandleFunc("/note/create", app.createNote)
 	mux.HandleFunc("/note/form", app.formNote)

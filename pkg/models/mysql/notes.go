@@ -83,7 +83,8 @@ func (model *NoteModel) Get(id int) (*models.Note, error) {
 
 func (model *NoteModel) GetProjectNotes(projectId int) ([]*models.Note, error) {
 	stmt := `SELECT id, title, content,created, expires, project_id, status_id FROM notes
-	WHERE project_id = ? AND is_delete = 0 AND expires > UTC_TIMESTAMP()`
+	WHERE expires > UTC_TIMESTAMP() 
+	AND project_id = ? AND is_delete = 0 AND expires > UTC_TIMESTAMP()`
 
 	rows, err := model.DB.Query(stmt, projectId)
 
@@ -114,7 +115,7 @@ func (model *NoteModel) GetProjectNotes(projectId int) ([]*models.Note, error) {
 func (model *NoteModel) GetAllProjectNotes(projectId int) ([]*models.Note, error) {
 	stmt := `SELECT id, title, content,created, expires, project_id, status_id 
 	FROM notes
-	WHERE project_id = ? AND is_delete = 0`
+	WHERE expires > UTC_TIMESTAMP() AND project_id = ? AND is_delete = 0`
 
 	rows, err := model.DB.Query(stmt, projectId)
 
@@ -141,10 +142,11 @@ func (model *NoteModel) GetAllProjectNotes(projectId int) ([]*models.Note, error
 	return notes, nil
 
 }
-func (model *NoteModel) GetProjectNotesWitchStatus(projectId, statusId int) ([]*models.Note, error) {
+func (model *NoteModel) GetProjectNotesWitchStatus(projectId, statusId string) ([]*models.Note, error) {
 	stmt := `SELECT id, title, content,created, expires, project_id, status_id 
 	FROM notes
-	WHERE project_id = ? AND is_delete = 0 AND status_id = ?`
+	WHERE expires > UTC_TIMESTAMP() 
+	AND project_id = ? AND is_delete = 0 AND status_id = ?`
 
 	rows, err := model.DB.Query(stmt, projectId, statusId)
 

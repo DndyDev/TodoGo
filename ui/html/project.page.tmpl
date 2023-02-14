@@ -3,38 +3,39 @@
 {{define "title"}}{{.Project.Title}} {{end}}
 
 {{define "main"}}
-{{$notes := .Notes}}
-{{$statuses := .Statuses}}
-<div class="snippet">
+  {{$notes := .Notes}}
+  {{$statuses := .Statuses}}
+  <div class="snippet">
     <div class="metadata">
         <span>Проект</span>
     <div class="metadata">
         <strong>{{.Project.Title}}</strong>
     </div>
-</div>
-{{if $notes}}
+  </div>
+  {{if $notes}}
     <table>
-        <tr>
-            <th>Заметка</th>
-            <th>Статус</th>
-            <th>Создана</th>
-        </tr>
-        {{range $key, $note := $notes}}
+      <tr>
+       <th>Заметка</th>
+        <th>Статус</th>
+        <th>Создана</th>
+      </tr>
+      {{range $key, $note := $notes}}
         {{$statusID := $note.StatusID}}
         <tr>
-            <td><a href='/note?id={{.ID}}'>{{$note.Title}}</a></td>
-            {{range $key, $status := $statuses}}
-              {{if eq $status.ID $statusID }}
-                <td>{{$status.Name}}<td>
-              {{end}}
+          <td><a href='/note?id={{.ID}}'>{{$note.Title}}</a></td>
+          {{range $key, $status := $statuses}}
+            {{if eq $status.ID $statusID }}
+              <td>{{$status.Name}}<td>
             {{end}}
-            <td>{{$note.Created}}</td>
+          {{end}}
+          <td>{{$note.Created}}</td>
         </tr>
-        {{end}}
+      {{end}}
     </table>
-    {{else}} 
-        <p>Пусто</p>
-    {{end}}
-<a href="/project/data?id={{.Project.ID}}">Изменить</a><br>
-<a href="/project/delete?id={{.Project.ID}}">Удалить</a>
+    <a href="/project/data?id={{.Project.ID}}">Изменить</a><br>
+    <a href="/project/delete?id={{.Project.ID}}">Удалить</a><br>
+    <a href="/search?id={{.Project.ID}}">Поиск заметок по статусу</a><br>
+  {{else}} 
+    <p>Пусто</p>
+ {{end}}
 {{end}}
