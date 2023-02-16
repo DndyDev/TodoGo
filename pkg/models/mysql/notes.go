@@ -112,6 +112,38 @@ func (model *NoteModel) GetProjectNotes(projectId int) ([]*models.Note, error) {
 
 }
 
+func (model *NoteModel) GetProjectNotesWitchSubstring
+	(projectId int, substring string) ([]*models.Note, error) {
+	stmt := `SELECT * FROM notes
+	WHERE expires > UTC_TIMESTAMP() AND title LIKE '%?%'
+	AND project_id = ? AND is_delete = 0 AND expires > UTC_TIMESTAMP()`
+
+	rows, err := model.DB.Query(stmt, substring, projectId)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var notes []*models.Note
+
+	for rows.Next() {
+		note := &models.Note{}
+		err = rows.Scan(&note.ID, &note.Title, &note.Content, &note.Created,
+			&note.Expires, &note.ProjectID, &note.StatusID)
+		if err != nil {
+			return nil, err
+		}
+		notes = append(notes, note)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return notes, nil
+
+}
+
 func (model *NoteModel) GetAllProjectNotes(projectId int) ([]*models.Note, error) {
 	stmt := `SELECT id, title, content,created, expires, project_id, status_id 
 	FROM notes
